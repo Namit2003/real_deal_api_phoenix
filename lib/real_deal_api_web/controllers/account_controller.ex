@@ -48,6 +48,29 @@ defmodule RealDealApiWeb.AccountController do
     end
   end
 
+  def refresh_session(conn, %{}) do
+    old_token = Guardian.Plug.current_token(conn)
+
+    case Guardian.decode_and_verify(old_token) do
+      {:ok, claims} ->
+        case Guardian.resource_from_claims(claims) do
+          {:ok, account} ->
+            {:ok, _old, {new_token, _new_claims}} = Guardian.refresh(old_token)
+
+            conn
+            |> Plug.Conn.put_session(:account_id, account.id)
+            |> put_status(:ok)
+            |> render(:account_token, %{account: account, token: new_token})
+
+          {:error, _reason} ->
+            raise ErrorResponse.NotFound
+        end
+
+      {:error, _reason} ->
+        raise ErrorResponse.NotFound
+    end
+  end
+
   def sign_out(conn, %{}) do
     account = conn.assigns[:account]
     token = Guardian.Plug.current_token(conn)
@@ -59,9 +82,9 @@ defmodule RealDealApiWeb.AccountController do
     |> render(:account_token, %{account: account, token: nil})
   end
 
-  def show(conn, %{"id" => _id}) do
-    # account = Accounts.get_account!(id)
-    render(conn, :show, account: conn.assigns.account)
+  def show(conn, %{"id" => id}) do
+    account = Accounts.get_account!(id)
+    render(conn, :show, account: account)
   end
 
   def update(conn, %{"account" => account_params}) do
