@@ -23,6 +23,14 @@ defmodule RealDealApiWeb.AccountJSON do
     }
   end
 
+  def full_account(%{account: account}) do
+    %{
+      id: account.id,
+      email: account.email,
+      user: RealDealApiWeb.UserJSON.show(%{user: account.user})
+    }
+  end
+
   def account_token(%{account: account, token: token}) do
     %{
       id: account.id,
