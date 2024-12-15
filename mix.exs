@@ -44,7 +44,8 @@ defmodule RealDealApi.MixProject do
       {:bandit, "~> 1.5"},
       {:guardian, "~> 2.3"},
       {:guardian_db, "~> 2.0"},
-      {:pbkdf2_elixir, "~> 2.0"}
+      {:pbkdf2_elixir, "~> 2.0"},
+      {:faker, "~> 0.17", only: :test}
     ]
   end
 
