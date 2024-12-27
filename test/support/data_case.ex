@@ -18,14 +18,26 @@ defmodule RealDealApi.DataCase do
 
   using do
     quote do
-      alias RealDealApi.Repo
-
-      import Ecto
-      import Ecto.Changeset
-      import Ecto.Query
+      alias Ecto.Changeset
       import RealDealApi.DataCase
+      alias RealDealApi.{Support.Factory, Repo}
     end
   end
+
+  setup _ do
+    Ecto.Adapters.SQL.Sandbox.mode(RealDealApi.Repo, :manual)
+  end
+
+  # using do
+  #   quote do
+  #     alias RealDealApi.Repo
+
+  #     import Ecto
+  #     import Ecto.Changeset
+  #     import Ecto.Query
+  #     import RealDealApi.DataCase
+  #   end
+  # end
 
   setup tags do
     RealDealApi.DataCase.setup_sandbox(tags)
